@@ -102,7 +102,7 @@
 								Category:<?php echo htmlentities($category); ?> Published on <?php echo htmlentities($date_time); ?>
 							</p>
 							<p class="post">
-								<?php echo ($post); ?>
+								<?php echo nl2br($post); ?>
 							</p>
 						</div><!--end blog caption -->
 					</div><!--end blog post -->
@@ -125,7 +125,7 @@
 					<div class="cmnt_data_block">
 						<p class="commentor"><?php echo $commenterName; ?></p>
 						<p class="comnt_date"><?php echo $commentDate; ?></p>
-						<p class="cmnt_data"><?php echo $commentsData; ?></p>
+						<p class="cmnt_data"><?php echo nl2br($commentsData); ?></p>
 					</div>
 				</div>
 				<br>
