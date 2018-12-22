@@ -9,8 +9,16 @@
 					if (isset($_GET["search_button"])) {
 						$search = $_GET["search"];
 						$viewQuery = mysqli_query($con,"SELECT * FROM admin_panel WHERE date_time LIKE '%$search%' OR title LIKE '%$search%' OR category LIKE '%$search%' OR post LIKE '%$search%' ");
+					}elseif(isset($_GET["page"])){
+						$page = $_GET["page"];
+						if ($page<1) {
+							$showPostFrom = 0;
+						}else{
+							$showPostFrom = ($page*3)-3;
+						}
+						$viewQuery = mysqli_query($con,"SELECT * FROM admin_panel ORDER BY date_time DESC LIMIT $showPostFrom,3");
 					}else{
-						$viewQuery = mysqli_query($con,"SELECT * FROM admin_panel ORDER BY date_time DESC");
+						$viewQuery = mysqli_query($con,"SELECT * FROM admin_panel ORDER BY date_time DESC LIMIT 0,3");
 					}
 					while ($vq=mysqli_fetch_array($viewQuery)) {
 						$postId = $vq["id"];
@@ -40,6 +48,49 @@
 						<a href="fullPost.php?id=<?php echo $postId ?>"><span class="btn btn-info">Read More &rsaquo;&rsaquo;</span></a>
 					</div><!--end blog post -->
 				<?php } ?>
+				<nav>
+					<ul class="pagination pul-left pagination-lg">
+				<?php
+
+				if (isset($page)) {
+					if ($page>1) {
+						?>
+						<li><a href="blog.php?page=<?php echo $page-1;?>">&laquo;</a></li>
+						<?php
+					}
+				}
+
+					$paginationQuery = mysqli_query($con,"SELECT COUNT(*) FROM admin_panel");
+					$rowPagination = mysqli_fetch_array($paginationQuery);
+					$totalPost = array_shift($rowPagination);
+					$postPerPage = $totalPost/3;
+					$postPerPage = ceil($postPerPage);
+
+					for ($i=1; $i<=$postPerPage  ; $i++) { 
+						if(isset($page)){
+							if($i==$page){
+
+							?>
+								<li class="active"><a href="blog.php?page=<?php echo $i; ?>"><?php echo $i; ?></a></li>
+							<?php
+							}else{?>
+								<li><a href="blog.php?page=<?php echo $i; ?>"><?php echo $i; ?></a></li>
+								<?php
+							}
+						}
+
+					}
+					if (isset($page)) {
+						if ($page+1<=$postPerPage) {
+							?>
+							<li><a href="blog.php?page=<?php echo $page+1;?>">&raquo;</a></li>
+							<?php
+						}
+					}
+
+				?>
+					</ul>
+				</nav>
 			</div>
 			<div class="col-sm-offset-1 col-sm-3">
 				<h2>About Me</h2>
